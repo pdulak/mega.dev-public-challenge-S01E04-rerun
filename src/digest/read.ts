@@ -37,13 +37,14 @@ export function foldLines(text: string): { rows: DigestRow[]; badLines: number }
     const r = byJob.get(l.job);
     if (!r) {
       byJob.set(l.job, {
-        job: l.job, owner: l.owner, runs: 1, retries: l.status === 'retry' ? 1 : 0,
+        job: l.job, owner: l.owner, runs: 1, retries: l.status === 'retry' ? 1 : 0, fails: l.status === 'fail' ? 1 : 0,
         lastStatus: l.status, lastError: l.error, firstAt: l.at, lastAt: l.at,
       });
       continue;
     }
     r.runs++;
     if (l.status === 'retry') r.retries++;
+    if (l.status === 'fail') r.fails++;
     // Lines are in log order; the last one wins.
     r.lastStatus = l.status;
     r.lastAt = l.at;
